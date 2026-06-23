@@ -5,11 +5,10 @@ No auth, no CSRF, no mail — this is a B2B internal tool with no user login.
 from flask import Flask, jsonify
 
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 
 from .config import Config
+from .database import db
 
-db = SQLAlchemy()
 migrate = Migrate()
 
 
@@ -20,6 +19,10 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
+
+    # Import models so their tables are registered on db.metadata
+    # (required for Flask-Migrate autogenerate).
+    from .models import db_models  # noqa: F401
 
     # Blueprints
     from .routes.main import main_bp

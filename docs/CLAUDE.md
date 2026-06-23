@@ -259,17 +259,17 @@ GEMINI_API_KEY=     # Gemini API (Phase 5)
 Goal: running Flask app + Neon DB connected + loan data loaded.
 
 Completed steps: _(update this section as steps are done)_
-- [ ] Fresh repo created
-- [ ] Flask skeleton scaffolded (app factory, blueprints, config)
-- [ ] Neon DB connected + migrations initialized
-- [ ] `loan_applications` table created
-- [ ] `portfolio_snapshots` table created
-- [ ] `query_log` table created
-- [ ] `data/load_data.py` written
-- [ ] 133k records loaded into Neon
-- [ ] Smoke test: Flask starts, DB query returns rows
-- [ ] `.python-version` = 3.11.9
-- [ ] `requirements.txt` pinned
+- [x] Fresh repo created
+- [x] Flask skeleton scaffolded (app factory, blueprints, config)
+- [x] Neon DB connected + migrations initialized
+- [x] `loan_applications` table created
+- [x] `portfolio_snapshots` table created
+- [x] `query_log` table created
+- [x] `data/load_data.py` written
+- [x] 133k records loaded into Neon
+- [x] Smoke test: Flask starts, DB query returns rows
+- [x] `.python-version` = 3.11.9
+- [x] `requirements.txt` pinned
 
 ---
 

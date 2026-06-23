@@ -1,2 +1,0 @@
-# Flask-Migrate / Alembic populates this directory via `flask db init`.
-# Remove this file if `flask db init` complains the directory is not empty.
