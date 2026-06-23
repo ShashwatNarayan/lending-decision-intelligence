@@ -1,0 +1,3 @@
+# Render deployment blueprint for the Lending Decision Intelligence Platform.
+# Filled in during Phase 6. Start command: gunicorn wsgi:app
+# Build command: pip install -r requirements.txt && flask db upgrade

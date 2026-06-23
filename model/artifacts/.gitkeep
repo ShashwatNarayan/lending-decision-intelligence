@@ -1,0 +1,2 @@
+# Drop the real model artifacts here (gitignored *.pkl):
+#   xgboost_model.pkl, scaler.pkl, feature_columns.pkl, optimal_threshold.pkl

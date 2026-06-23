@@ -1,0 +1,9 @@
+venv/
+.venv/
+.env
+__pycache__/
+*.pyc
+*.pkl
+data/stage2_features.csv
+instance/
+.DS_Store
