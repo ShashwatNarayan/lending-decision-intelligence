@@ -76,7 +76,9 @@ class PortfolioSnapshot(db.Model):
     __tablename__ = "portfolio_snapshots"
 
     id = db.Column(db.Integer, primary_key=True)
-    threshold = db.Column(db.Numeric(6, 4))
+    # Unique so the backtest can upsert one snapshot per threshold
+    # (INSERT ... ON CONFLICT (threshold) DO UPDATE).
+    threshold = db.Column(db.Numeric(6, 4), unique=True)
     approvals = db.Column(db.Integer)
     rejections = db.Column(db.Integer)
     expected_defaults = db.Column(db.Integer)

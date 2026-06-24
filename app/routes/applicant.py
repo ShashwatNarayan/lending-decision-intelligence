@@ -1,11 +1,18 @@
 """Single applicant lookup routes (decision + reasons).
 
-Exposes POST /api/score: a JSON applicant profile in, a full lending decision
-out. Missing features fall back to dataset medians (FEATURE_DEFAULTS).
+Exposes POST /api/score (per-request scoring) plus GET lookups for already-scored
+applications stored in the DB. Missing features on /api/score fall back to dataset
+medians (FEATURE_DEFAULTS).
 """
-from flask import Blueprint, jsonify, request
+import json
+from decimal import Decimal
 
+from flask import Blueprint, jsonify, request
+from sqlalchemy import func
+
+from app.database import db
 from app.decision.engine import DecisionEngine
+from app.models.db_models import LoanApplication
 
 applicant_bp = Blueprint("applicant", __name__)
 
@@ -77,3 +84,60 @@ def score():
         top_factors=result["top_factors"],
         threshold_used=result["threshold_used"],
     )
+
+
+def _num(value):
+    """Convert DB Numeric/bool to a plain JSON-friendly number."""
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, Decimal):
+        return float(value)
+    return value
+
+
+def _serialize_applicant(row):
+    """Build the response dict for a stored loan application."""
+    reasons = row.decision_reasons
+    if reasons:
+        try:
+            reasons = json.loads(reasons)
+        except (ValueError, TypeError):
+            pass  # leave as the raw stored text if it isn't valid JSON
+
+    data = {
+        "id": row.id,
+        "default_probability": _num(row.default_probability),
+        "decision": row.decision,
+        "assigned_rate": _num(row.assigned_rate),
+        "decision_reasons": reasons,
+        "target": row.target,
+    }
+    # Append all 30 feature values.
+    for feature in FEATURE_DEFAULTS:
+        data[feature] = _num(getattr(row, feature))
+    return data
+
+
+@applicant_bp.route("/api/applicant/random")
+def applicant_random():
+    """A random scored applicant, optionally filtered by decision."""
+    query = LoanApplication.query
+    decision = request.args.get("decision")
+    if decision:
+        query = query.filter(LoanApplication.decision == decision)
+
+    row = query.order_by(func.random()).first()
+    if row is None:
+        return jsonify(error="Applicant not found"), 404
+    return jsonify(_serialize_applicant(row))
+
+
+@applicant_bp.route("/api/applicant/<int:applicant_id>")
+def applicant_detail(applicant_id):
+    """Full stored decision + features for one application by id."""
+    row = db.session.get(LoanApplication, applicant_id)
+    if row is None:
+        return jsonify(error="Applicant not found"), 404
+    return jsonify(_serialize_applicant(row))

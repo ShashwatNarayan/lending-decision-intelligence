@@ -254,7 +254,7 @@ GEMINI_API_KEY=     # Gemini API (Phase 5)
 
 ## Current build phase
 
-**Phase 2 — Decision engine (Days 5–8)**
+**Phase 3 — Dashboard UI (Days 11–14)**
 
 ### Phase 0 — Setup and foundation (Days 1–2) — DONE
 
@@ -295,6 +295,30 @@ Goal: working scoring module (load model, score applicant, SHAP reasons) exposed
 > The scaler is still loaded (`self.scaler`) per the artifact contract but is not
 > used in inference. **Do not "fix" this by re-adding scaling.**
 
+### Phase 2 — Decision engine + backtest (Days 5–8) — DONE
+
+Goal: ₹-impact backtesting that proves the decision engine is worth deploying.
+
+- [x] `app/backtest/evaluator.py` — `PortfolioEvaluator` (`evaluate_at_threshold`,
+      `evaluate_threshold_range`, `find_optimal_threshold`) + `get_evaluator()` singleton
+- [x] Revenue / loss model: revenue = loan_amnt × rate/100 × term_years × 0.5
+      (3y short / 5y long); loss = loan_amnt × 0.60 (LGD); reject = 0
+- [x] `scripts/run_backtest.py` — pre-computed 41 thresholds (0.10–0.50) into
+      `portfolio_snapshots` via idempotent `ON CONFLICT (threshold)` upsert
+- [x] Migration `a1c2e3f40512` — unique constraint on `portfolio_snapshots.threshold`
+- [x] `GET /api/backtest/summary`, `/api/backtest/threshold/<float>`,
+      `/api/backtest/optimal` in `app/routes/portfolio.py`
+- [x] `GET /api/applicant/<int:id>`, `/api/applicant/random` (+ `?decision=` filter)
+      in `app/routes/applicant.py`
+
+> **NOTE — optimal threshold is ~0.44, not 0.20–0.35.** Under the specified
+> revenue model a repaid loan earns up to `rate × term × 0.5` of principal
+> (e.g. 19% × 5y × 0.5 ≈ 47.5%) while a default loses only 60% (LGD). The
+> break-even default probability is therefore ≈0.44 for long-term top-tier
+> loans, so net ₹ value keeps rising until ~0.44 before losses dominate. This is
+> a direct consequence of the revenue formula, not a bug. Approval rate at the
+> model threshold 0.2282 is 64.7%, matching Phase 1.
+
 ---
 
 ## How to run locally
@@ -329,4 +353,4 @@ python flask_app.py
 
 ---
 
-*Last updated: Phase 1 complete*
+*Last updated: Phase 2 complete*
