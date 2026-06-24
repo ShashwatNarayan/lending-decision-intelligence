@@ -254,11 +254,12 @@ GEMINI_API_KEY=     # Gemini API (Phase 5)
 
 ## Current build phase
 
-**Phase 0 — Setup and foundation (Days 1–2)**
+**Phase 2 — Decision engine (Days 5–8)**
+
+### Phase 0 — Setup and foundation (Days 1–2) — DONE
 
 Goal: running Flask app + Neon DB connected + loan data loaded.
 
-Completed steps: _(update this section as steps are done)_
 - [x] Fresh repo created
 - [x] Flask skeleton scaffolded (app factory, blueprints, config)
 - [x] Neon DB connected + migrations initialized
@@ -270,6 +271,29 @@ Completed steps: _(update this section as steps are done)_
 - [x] Smoke test: Flask starts, DB query returns rows
 - [x] `.python-version` = 3.11.9
 - [x] `requirements.txt` pinned
+
+### Phase 1 — Scoring + explanation (Days 3–4) — DONE
+
+Goal: working scoring module (load model, score applicant, SHAP reasons) exposed via API.
+
+- [x] `app/models/scoring.py` — `ScoringModel` class + `get_model()` singleton
+- [x] `app/models/explainer.py` — `SHAPExplainer` (TreeExplainer) + `get_explainer()` singleton
+- [x] `app/decision/adverse_action.py` — `generate_reasons()` (SHAP → plain English)
+- [x] `app/decision/pricing.py` — `assign_rate()` risk-band → interest rate
+- [x] `app/decision/engine.py` — `DecisionEngine.decide()` single entry point
+- [x] `POST /api/score` endpoint in `app/routes/applicant.py` (+ `FEATURE_DEFAULTS` medians)
+- [x] `scripts/score_all.py` — batch-scored all 133k rows, wrote back prob/decision/rate
+- [x] End-to-end tested: median (APPROVE), high-risk (REJECT), low-risk (APPROVE)
+
+> **IMPORTANT — model uses RAW (unscaled) features.** Despite `scaler.pkl` being a
+> project artifact, the XGBoost model was trained on **raw** features. Verified
+> empirically: raw scoring reproduces the ~20% dataset default rate and the
+> documented median-applicant probability (~0.19); feeding `scaler.transform()`
+> output yields nonsensical ~0.60 probabilities and breaks correlation with the
+> ground-truth target. `scoring.py` therefore does **not** apply the scaler, and
+> SHAP's `TreeExplainer` runs on raw features too, so scorer and explainer agree.
+> The scaler is still loaded (`self.scaler`) per the artifact contract but is not
+> used in inference. **Do not "fix" this by re-adding scaling.**
 
 ---
 
@@ -305,4 +329,4 @@ python flask_app.py
 
 ---
 
-*Last updated: Phase 0 start*
+*Last updated: Phase 1 complete*
