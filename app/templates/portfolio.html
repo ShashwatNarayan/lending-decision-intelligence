@@ -1,1 +1,68 @@
-<!-- Portfolio dashboard: metric cards, threshold slider, ₹-impact chart (Phase 4). -->
+{% extends "base.html" %}
+{% block title %}Portfolio Dashboard — Lending Decision Intelligence{% endblock %}
+{% block nav_portfolio %}active{% endblock %}
+{% block topbar_threshold %}{{ (optimal * 100) | round(0, 'floor') | int }}%{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Portfolio Dashboard</h1>
+
+<!-- Section 1 — metric cards -->
+<section class="cards">
+  <div class="card">
+    <div class="label">Approvals</div>
+    <div class="value" id="card-approvals">{{ '{:,}'.format(initial.approvals) }}</div>
+    <div class="sub" id="card-approvals-sub">{{ '%.2f' % initial.approval_rate }}% of 133,018</div>
+  </div>
+  <div class="card">
+    <div class="label">Rejections</div>
+    <div class="value" id="card-rejections">{{ '{:,}'.format(initial.rejections) }}</div>
+    <div class="sub" id="card-rejections-sub">{{ '%.2f' % (initial.rejections / 133018 * 100) }}% of 133,018</div>
+  </div>
+  <div class="card accent-net">
+    <div class="label">Net Portfolio Value</div>
+    <div class="value" id="card-net">&#8377;{{ '%.1f' % (initial.net_portfolio_value / 1000000) }}M</div>
+    <div class="sub">expected revenue − expected losses</div>
+  </div>
+  <div class="card">
+    <div class="label">Expected Defaults</div>
+    <div class="value" id="card-defaults">{{ '{:,}'.format(initial.false_positives) }}</div>
+    <div class="sub">among approved</div>
+  </div>
+</section>
+
+<!-- Section 2 — threshold slider -->
+<section class="slider-section">
+  <div class="slider-label">
+    Default Probability Threshold: <span id="slider-value">0.44</span>
+  </div>
+  <input type="range" id="threshold-slider" min="0.10" max="0.50" step="0.01" value="0.44">
+  <div class="slider-anchors">
+    <span>Conservative (0.10)</span>
+    <span>Permissive (0.50)</span>
+  </div>
+</section>
+
+<!-- Section 3 — charts -->
+<section class="charts">
+  <div class="chart-box">
+    <h3>Net Portfolio Value vs Threshold</h3>
+    <canvas id="chart-net"></canvas>
+  </div>
+  <div class="chart-box">
+    <h3>Approval Rate &amp; Revenue vs Threshold</h3>
+    <canvas id="chart-rate-rev"></canvas>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Data passed from the server so charts/cards render before any fetch runs.
+  window.LDI_INITIAL = {{ initial | tojson }};
+  window.LDI_SERIES = {{ series | tojson }};
+  window.LDI_OPTIMAL = {{ optimal | tojson }};
+  window.LDI_TOTAL = 133018;
+</script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/threshold_slider.js') }}"></script>
+{% endblock %}

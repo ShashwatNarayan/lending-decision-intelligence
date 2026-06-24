@@ -254,7 +254,7 @@ GEMINI_API_KEY=     # Gemini API (Phase 5)
 
 ## Current build phase
 
-**Phase 3 — Dashboard UI (Days 11–14)**
+**Phase 4 — NL Query Layer (Days 15–17)**
 
 ### Phase 0 — Setup and foundation (Days 1–2) — DONE
 
@@ -319,6 +319,40 @@ Goal: ₹-impact backtesting that proves the decision engine is worth deploying.
 > a direct consequence of the revenue formula, not a bug. Approval rate at the
 > model threshold 0.2282 is 64.7%, matching Phase 1.
 
+### Phase 3 — Dashboard UI (Days 11–14) — DONE
+
+Goal: three working frontend screens wired to the Phase 1/2 APIs. Jinja2 +
+vanilla JS + Chart.js (CDN). No React, no build step, no new backend logic.
+
+- [x] `app/templates/base.html` — navy sidebar, top bar (live threshold /
+      optimal / model), Chart.js CDN, `{% block %}` tags
+- [x] `app/templates/portfolio.html` — 4 metric cards, threshold slider
+      (0.10–0.50, default 0.44), two Chart.js charts; cards server-rendered at
+      0.44 so the page works without JS
+- [x] `app/templates/applicant.html` — decision banner (green/red), 8-feature
+      profile table, decision-reason list (+ fallback), SHAP bar chart
+- [x] `app/templates/404.html` — clean HTML not-found page
+- [x] `app/static/css/main.css` — all custom CSS (single file)
+- [x] `app/static/js/charts.js` — portfolio charts (+ vanilla vertical-line
+      plugin for optimal/current threshold) and the SHAP bar chart
+- [x] `app/static/js/threshold_slider.js` — initial render + fetch on slide
+- [x] `GET /` and `/portfolio` → dashboard (`portfolio.py`)
+- [x] `GET /applicant/<int:id>`, `GET /applicant/random` (+ `?decision=`) HTML
+      pages (`applicant.py`)
+- [x] `GET /api/applicant/<int:id>/shap` — fresh top-10 SHAP per request
+      (`SHAPExplainer.get_shap_values`)
+- [x] Smoke-tested all 7 flows (dashboard, slider @0.23/0.10, applicant
+      approve/reject/random, 404)
+
+> **NOTE — applicant routes are split into two blueprints.** Part E asked the
+> applicant blueprint to mount at `url_prefix="/applicant"`, but the existing
+> `/api/score` and `/api/applicant/*` JSON routes live there and must stay at
+> root (hard constraint: APIs unchanged). Resolved by splitting: `applicant_bp`
+> (HTML pages) mounts at `/applicant`; `applicant_api_bp` (JSON) stays at root.
+> `portfolio_bp` mounts at `url_prefix="/"` and now owns `/` (the old
+> `main.index` placeholder moved to `/health`). The scaler is still **not**
+> applied anywhere in the inference path (Phase 1 finding preserved).
+
 ---
 
 ## How to run locally
@@ -353,4 +387,4 @@ python flask_app.py
 
 ---
 
-*Last updated: Phase 2 complete*
+*Last updated: Phase 3 complete*

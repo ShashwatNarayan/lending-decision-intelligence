@@ -1,1 +1,37 @@
-<!-- Base layout template: shared header/nav/footer for all pages (Phase 4). -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Lending Decision Intelligence{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">Lending Decision Intelligence</div>
+      <nav>
+        <a class="navlink {% block nav_portfolio %}{% endblock %}"
+           href="{{ url_for('portfolio.dashboard') }}">Portfolio Dashboard</a>
+        <a class="navlink {% block nav_applicant %}{% endblock %}"
+           href="{{ url_for('applicant.random_applicant') }}">Applicant Lookup</a>
+      </nav>
+    </aside>
+
+    <div class="mainwrap">
+      <header class="topbar">
+        <div class="topbar-item">Threshold: <span id="topbar-threshold">{% block topbar_threshold %}—{% endblock %}</span></div>
+        <div class="topbar-item">Optimal: <span>0.44</span></div>
+        <div class="topbar-item">Model: <span>XGBoost | 133k records</span></div>
+      </header>
+
+      <main class="content">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

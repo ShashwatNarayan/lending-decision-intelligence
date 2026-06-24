@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Not Found — Lending Decision Intelligence{% endblock %}
+
+{% block content %}
+<div class="error-wrap">
+  <div class="code">404</div>
+  <div class="msg">{{ message or "The page you requested could not be found." }}</div>
+  <a class="btn primary" href="{{ url_for('portfolio.dashboard') }}">← Back to Portfolio Dashboard</a>
+</div>
+{% endblock %}

@@ -27,11 +27,15 @@ def create_app():
     # Blueprints
     from .routes.main import main_bp
     from .routes.portfolio import portfolio_bp
-    from .routes.applicant import applicant_bp
+    from .routes.applicant import applicant_bp, applicant_api_bp
 
     app.register_blueprint(main_bp)
-    app.register_blueprint(portfolio_bp)
-    app.register_blueprint(applicant_bp)
+    # portfolio owns "/" (dashboard) and the /api/backtest/* JSON routes.
+    app.register_blueprint(portfolio_bp, url_prefix="/")
+    # applicant HTML pages live under /applicant; the JSON API stays at root so
+    # /api/score and /api/applicant/* are unchanged.
+    app.register_blueprint(applicant_bp, url_prefix="/applicant")
+    app.register_blueprint(applicant_api_bp)
 
     # JSON error handlers
     @app.errorhandler(404)

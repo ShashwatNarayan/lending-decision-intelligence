@@ -59,6 +59,18 @@ class SHAPExplainer:
             "base_value": base_value,
         }
 
+    def get_shap_values(self, features_dict, top_n=10):
+        """Return the top-N SHAP contributions as [{feature, shap_value}].
+
+        Sorted by absolute contribution, descending. Used by the applicant-page
+        SHAP bar chart (fresh per-request computation, not cached).
+        """
+        factors = self.explain(features_dict)["shap_values"]
+        return [
+            {"feature": f["feature"], "shap_value": f["shap_value"]}
+            for f in factors[:top_n]
+        ]
+
 
 # Module-level singleton: build the explainer once per process.
 _explainer_instance = None

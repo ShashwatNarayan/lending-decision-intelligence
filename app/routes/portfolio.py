@@ -3,7 +3,7 @@
 The dashboard UI itself is built in Phase 4; these JSON endpoints expose the
 pre-computed ₹ backtest (portfolio_snapshots) and live threshold evaluation.
 """
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, render_template
 
 from app.backtest.evaluator import get_evaluator
 from app.database import db
@@ -12,9 +12,44 @@ from app.models.db_models import PortfolioSnapshot
 portfolio_bp = Blueprint("portfolio", __name__)
 
 
+@portfolio_bp.route("/")
 @portfolio_bp.route("/portfolio")
-def portfolio():
-    return "Portfolio dashboard — coming soon"
+def dashboard():
+    """Render the portfolio dashboard pre-filled with the optimal threshold.
+
+    Server-renders the cards (so the page is useful without JS) and passes the
+    full 41-threshold series + initial metrics as JSON for the charts/slider.
+    """
+    evaluator = get_evaluator()
+    snaps = (
+        PortfolioSnapshot.query.order_by(PortfolioSnapshot.threshold.asc()).all()
+    )
+
+    # Full evaluation per stored threshold (net value matches the snapshots;
+    # also yields revenue/approval-rate needed by the charts).
+    series = [evaluator.evaluate_at_threshold(float(s.threshold)) for s in snaps]
+    chart_series = [
+        {
+            "threshold": r["threshold"],
+            "net_portfolio_value": r["net_portfolio_value"],
+            "approval_rate": r["approval_rate"],
+            "total_revenue": r["total_revenue"],
+        }
+        for r in series
+    ]
+
+    optimal = (
+        max(series, key=lambda r: r["net_portfolio_value"])["threshold"]
+        if series else 0.44
+    )
+    initial = evaluator.evaluate_at_threshold(optimal)
+
+    return render_template(
+        "portfolio.html",
+        initial=initial,
+        series=chart_series,
+        optimal=optimal,
+    )
 
 
 def _approval_rate(snap):

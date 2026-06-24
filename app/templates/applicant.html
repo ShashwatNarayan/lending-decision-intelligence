@@ -1,1 +1,87 @@
-<!-- Applicant detail view: decision badge, assigned rate, plain-English reasons (Phase 4). -->
+{% extends "base.html" %}
+{% block title %}Applicant #{{ applicant.id }} — Lending Decision Intelligence{% endblock %}
+{% block nav_applicant %}active{% endblock %}
+
+{% block content %}
+{% set is_approve = applicant.decision == 'APPROVE' %}
+
+<!-- Decision banner -->
+<div class="decision-banner {{ 'approve' if is_approve else 'reject' }}">
+  <div>
+    <div class="headline">{{ 'APPROVED' if is_approve else 'Application Rejected' }}</div>
+    <div class="meta">
+      Applicant #{{ applicant.id }} &nbsp;·&nbsp;
+      P(default) = {{ '%.2f' % applicant.default_probability }}
+    </div>
+  </div>
+  {% if is_approve %}
+  <div class="rate">Assigned rate: {{ '%.2f' % applicant.assigned_rate }}%</div>
+  {% endif %}
+</div>
+
+<!-- Two columns -->
+<div class="two-col">
+  <!-- Left — applicant profile -->
+  <div class="panel">
+    <h2>Applicant Profile</h2>
+    <table class="profile">
+      <tr><td class="k">Loan amount</td>
+          <td class="v">&#8377;{{ '{:,.0f}'.format(applicant.loan_amnt) }}</td></tr>
+      <tr><td class="k">Annual income</td>
+          <td class="v">&#8377;{{ '{:,.0f}'.format(applicant.annual_inc) }}</td></tr>
+      <tr><td class="k">Debt-to-income (DTI)</td>
+          <td class="v">{{ '%.1f' % applicant.dti }}%</td></tr>
+      <tr><td class="k">FICO score</td>
+          <td class="v">{{ '%.0f' % applicant.fico_score }}</td></tr>
+      <tr><td class="k">Employment length</td>
+          <td class="v">{{ '%.0f' % applicant.emp_length }} yrs</td></tr>
+      <tr><td class="k">Revolving utilization</td>
+          <td class="v">{{ '%.1f' % applicant.revol_util }}%</td></tr>
+      <tr><td class="k">Loan-to-income</td>
+          <td class="v">{{ '%.2f' % applicant.loan_to_income }}</td></tr>
+      <tr><td class="k">Credit history</td>
+          <td class="v">{{ '%.1f' % applicant.credit_history_years }} yrs</td></tr>
+    </table>
+  </div>
+
+  <!-- Right — decision explanation -->
+  <div class="panel">
+    <h2>Decision Explanation</h2>
+    {% if applicant.decision_reasons %}
+      <h3 style="font-size:14px;margin:0 0 10px;">Why this decision?</h3>
+      <ul class="reasons">
+        {% for reason in applicant.decision_reasons %}
+          <li>{{ reason }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="reasons-fallback">Detailed reasons computed on request.</p>
+    {% endif %}
+
+    <h3 style="font-size:14px;margin:0 0 10px;">Top SHAP factors</h3>
+    <canvas id="chart-shap" height="240"></canvas>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div class="nav-row">
+  <a class="btn primary" href="{{ url_for('portfolio.dashboard') }}">← Portfolio Dashboard</a>
+  <span class="spacer"></span>
+  <a class="btn approve" href="{{ url_for('applicant.random_applicant', decision='APPROVE') }}">Load Random APPROVE</a>
+  <a class="btn reject" href="{{ url_for('applicant.random_applicant', decision='REJECT') }}">Load Random REJECT</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.LDI_APPLICANT_ID = {{ applicant.id | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+  // Fetch a fresh SHAP attribution for this applicant and render the bar chart.
+  fetch(`/api/applicant/${window.LDI_APPLICANT_ID}/shap`)
+    .then(function (r) { return r.json(); })
+    .then(function (data) { initShapChart(data.shap_values || []); })
+    .catch(function () { /* leave the canvas empty on failure */ });
+</script>
+{% endblock %}
