@@ -107,25 +107,44 @@ lending-decision-intelligence/
 
 ## Key results from the backtest
 
+Backtested across all 133,018 historical applications under a revenue model of
+`loan_amnt × rate × term × 0.5` for repaid loans and a 60% loss given default.
+
 | Metric | Value |
 |---|---|
-| Optimal threshold | X.XX *(to be filled after Phase 2 backtest)* |
-| Net portfolio value at optimal | ₹X,XX,XXX *(to be filled after Phase 2 backtest)* |
-| Approval rate at optimal | XX% *(to be filled after Phase 2 backtest)* |
-| vs naive 0.5 threshold | +₹X,XX,XXX improvement *(to be filled after Phase 2 backtest)* |
+| Optimal threshold | **0.44** |
+| Net portfolio value at optimal | **₹211.3M** (₹211,291,304) |
+| Approval rate at optimal | **89.77%** |
+| vs naive 0.5 threshold | **+₹3.0M** (₹211.3M at 0.44 vs ₹208.3M at 0.50) |
+
+> The optimum sits at 0.44 — not a textbook 0.20–0.35 — because under this
+> revenue model a repaid loan earns up to ~47% of principal (rate × term × 0.5)
+> while a default loses 60%, pushing the break-even default probability to ≈0.44.
+> At the model's F1-optimal threshold of 0.2282 the approval rate is 64.7%.
 
 ---
 
 ## API endpoints
 
+### JSON API
+
 | Method | Path | Description |
 |---|---|---|
 | POST | `/api/score` | Score an applicant (any subset of the 30 features; missing values default to dataset medians). Returns decision, default probability, assigned rate, reasons, and top SHAP factors. |
-| GET | `/api/backtest/summary` | Portfolio-level backtest summary across all applications *(Phase 2)*. |
-| GET | `/api/backtest/optimal` | Optimal threshold and the ₹ portfolio value it produces *(Phase 2)*. |
-| GET | `/api/backtest/threshold/<t>` | Portfolio metrics simulated at a custom threshold `t` *(Phase 2)*. |
-| GET | `/api/applicant/<id>` | Full stored decision for a single application by id *(Phase 2)*. |
-| GET | `/api/applicant/random` | A random scored applicant, for demos and spot-checks *(Phase 2)*. |
+| GET | `/api/backtest/summary` | All pre-computed threshold snapshots plus the optimal threshold. |
+| GET | `/api/backtest/optimal` | Optimal threshold and the ₹ portfolio value it produces. |
+| GET | `/api/backtest/threshold/<t>` | Portfolio metrics simulated at a custom threshold `t`. |
+| GET | `/api/applicant/<id>` | Full stored decision + 30 features for a single application by id. |
+| GET | `/api/applicant/random` | A random scored applicant (`?decision=APPROVE\|REJECT` to filter). |
+| GET | `/api/applicant/<id>/shap` | Fresh top-10 SHAP attribution for one applicant (powers the bar chart). |
+
+### Web pages
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/` | Portfolio dashboard — metric cards, threshold slider, ₹-impact charts. |
+| GET | `/applicant/<id>` | Single-applicant detail page (decision banner, profile, SHAP chart). |
+| GET | `/applicant/random` | Redirects to a random applicant (`?decision=` to filter). |
 
 ---
 

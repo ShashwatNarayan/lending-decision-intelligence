@@ -4,9 +4,20 @@
 
 let netChart = null;
 let rateRevChart = null;
-let shapChart = null;
+
+// Shared visual tokens (match the CSS design system).
+const GRID = "#eef2f7";
+const TICK = "#64748b";
+const BLUE = "#2563eb";
+const GREEN = "#16a34a";
+const AMBER = "#f59e0b";
+const RED = "#dc2626";
 
 function fmtT(t) { return Number(t).toFixed(2); }
+
+function axisTitle(text) {
+  return { display: true, text: text, color: TICK, font: { size: 11, weight: "600" } };
+}
 
 // Draws dashed vertical lines (optimal + current threshold) on the net chart.
 const verticalMarkers = {
@@ -42,6 +53,12 @@ function initPortfolioCharts(series, optimal) {
   // ---- Chart A: Net Portfolio Value vs Threshold ----
   const netCanvas = document.getElementById("chart-net");
   if (netCanvas) {
+    // Soft area gradient under the line.
+    const ctx = netCanvas.getContext("2d");
+    const grad = ctx.createLinearGradient(0, 0, 0, 300);
+    grad.addColorStop(0, "rgba(37, 99, 235, 0.25)");
+    grad.addColorStop(1, "rgba(37, 99, 235, 0)");
+
     netChart = new Chart(netCanvas, {
       type: "line",
       data: {
@@ -49,16 +66,20 @@ function initPortfolioCharts(series, optimal) {
         datasets: [{
           label: "Net ₹ Value (millions)",
           data: netM,
-          borderColor: "#2563eb",
-          backgroundColor: "rgba(37,99,235,0.10)",
+          borderColor: BLUE,
+          backgroundColor: grad,
+          borderWidth: 2,
           fill: true,
-          tension: 0.25,
-          pointRadius: 2,
+          tension: 0.35,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointHoverBackgroundColor: BLUE,
         }],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -68,14 +89,23 @@ function initPortfolioCharts(series, optimal) {
           },
         },
         scales: {
-          x: { title: { display: true, text: "Threshold" } },
-          y: { title: { display: true, text: "Net ₹ (millions)" } },
+          x: {
+            title: axisTitle("Threshold"),
+            grid: { display: false },
+            ticks: { color: TICK, font: { size: 11 }, maxTicksLimit: 9 },
+          },
+          y: {
+            title: axisTitle("Net ₹ (millions)"),
+            grid: { color: GRID },
+            border: { display: false },
+            ticks: { color: TICK, font: { size: 11 } },
+          },
         },
       },
       plugins: [verticalMarkers],
     });
     netChart.$optimalLabel = fmtT(optimal);
-    netChart.$markers = [{ label: fmtT(optimal), color: "#f59e0b" }];
+    netChart.$markers = [{ label: fmtT(optimal), color: AMBER }];
     netChart.update();
   }
 
@@ -90,37 +120,57 @@ function initPortfolioCharts(series, optimal) {
           {
             label: "Approval rate (%)",
             data: rate,
-            borderColor: "#16a34a",
-            backgroundColor: "rgba(22,163,74,0.08)",
+            borderColor: GREEN,
+            backgroundColor: "rgba(22, 163, 74, 0.08)",
+            borderWidth: 2,
             yAxisID: "y",
-            tension: 0.25,
-            pointRadius: 2,
+            tension: 0.35,
+            pointRadius: 0,
+            pointHoverRadius: 4,
           },
           {
             label: "Revenue (₹M)",
             data: revM,
-            borderColor: "#2563eb",
-            backgroundColor: "rgba(37,99,235,0.08)",
+            borderColor: BLUE,
+            backgroundColor: "rgba(37, 99, 235, 0.08)",
+            borderWidth: 2,
             yAxisID: "y1",
-            tension: 0.25,
-            pointRadius: 2,
+            tension: 0.35,
+            pointRadius: 0,
+            pointHoverRadius: 4,
           },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: true, position: "bottom" } },
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: {
+            display: true,
+            position: "bottom",
+            labels: { color: TICK, usePointStyle: true, boxWidth: 8, font: { size: 12 } },
+          },
+        },
         scales: {
-          x: { title: { display: true, text: "Threshold" } },
+          x: {
+            title: axisTitle("Threshold"),
+            grid: { display: false },
+            ticks: { color: TICK, font: { size: 11 }, maxTicksLimit: 9 },
+          },
           y: {
             position: "left",
-            title: { display: true, text: "Approval rate (%)" },
+            title: axisTitle("Approval rate (%)"),
+            grid: { color: GRID },
+            border: { display: false },
+            ticks: { color: TICK, font: { size: 11 } },
           },
           y1: {
             position: "right",
-            title: { display: true, text: "Revenue (₹M)" },
+            title: axisTitle("Revenue (₹M)"),
             grid: { drawOnChartArea: false },
+            border: { display: false },
+            ticks: { color: TICK, font: { size: 11 } },
           },
         },
       },
@@ -128,12 +178,12 @@ function initPortfolioCharts(series, optimal) {
   }
 }
 
-// Marks the current threshold on Chart A (blue dashed line, kept alongside gold optimal).
+// Marks the current threshold on Chart A (blue dashed line, kept alongside amber optimal).
 function highlightThreshold(t) {
   if (!netChart) return;
   netChart.$markers = [
-    { label: netChart.$optimalLabel, color: "#f59e0b" },
-    { label: fmtT(t), color: "#2563eb" },
+    { label: netChart.$optimalLabel, color: AMBER },
+    { label: fmtT(t), color: BLUE },
   ];
   netChart.update();
 }
@@ -147,16 +197,17 @@ function initShapChart(shapValues) {
   const top = shapValues.slice(0, 5);
   const labels = top.map(function (s) { return s.feature; });
   const values = top.map(function (s) { return s.shap_value; });
-  const colors = values.map(function (v) {
-    return v >= 0 ? "#dc2626" : "#16a34a";
-  });
+  const colors = values.map(function (v) { return v >= 0 ? RED : GREEN; });
 
-  if (shapChart) shapChart.destroy();
-  shapChart = new Chart(canvas, {
+  // Destroy any prior instance so the canvas/page does not grow on re-render.
+  if (window.shapChartInstance) {
+    window.shapChartInstance.destroy();
+  }
+  window.shapChartInstance = new Chart(canvas, {
     type: "bar",
     data: {
       labels: labels,
-      datasets: [{ data: values, backgroundColor: colors }],
+      datasets: [{ data: values, backgroundColor: colors, borderRadius: 3 }],
     },
     options: {
       indexAxis: "y",
@@ -171,7 +222,16 @@ function initShapChart(shapValues) {
         },
       },
       scales: {
-        x: { title: { display: true, text: "SHAP value (→ raises default risk)" } },
+        x: {
+          title: axisTitle("SHAP value (→ raises default risk)"),
+          grid: { color: GRID },
+          border: { display: false },
+          ticks: { color: TICK, font: { size: 11 } },
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: TICK, font: { size: 11 } },
+        },
       },
     },
   });

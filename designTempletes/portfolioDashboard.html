@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Portfolio Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#eae7e9",
+                        "outline": "#76777d",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#271901",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-tertiary-container": "#98805d",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e4e2e4",
+                        "on-secondary-container": "#fefcff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "primary-fixed": "#dae2fd",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#131b2e",
+                        "primary": "#000000",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1b1b1d",
+                        "inverse-primary": "#bec6e0",
+                        "outline-variant": "#c6c6cd",
+                        "on-surface-variant": "#45464d",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "background": "#f1f5f9", /* Slate 100 override */
+                        "inverse-on-surface": "#f3f0f2",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f6f3f5",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#dbe1ff",
+                        "surface-bright": "#fcf8fa",
+                        "tertiary": "#000000",
+                        "surface-dim": "#dcd9db",
+                        "secondary-container": "#316bf3",
+                        "inverse-surface": "#303032",
+                        "surface-container": "#f0edef",
+                        "tertiary-fixed": "#fcdeb5",
+                        "primary-container": "#0f172a", /* Navy override for header */
+                        "surface": "#ffffff", /* White override */
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1b1b1d",
+                        "on-secondary-fixed": "#00174b",
+                        "surface-tint": "#565e74",
+                        "secondary": "#0051d5",
+                        "surface-variant": "#e4e2e4",
+                        "on-primary-container": "#ffffff", /* White override */
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-tertiary-fixed": "#271901"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.75rem", /* 12px override */
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "1.5rem",
+                        "container-max": "1440px",
+                        "gutter": "1rem",
+                        "stack-sm": "0.5rem",
+                        "stack-md": "1rem",
+                        "stack-xs": "0.25rem",
+                        "margin-x": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "display": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        .bg-gradient-track {
+            background: linear-gradient(to right, #e2e8f0 0%, #2563eb 100%);
+        }
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .slider-thumb::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen text-on-surface font-sans selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- TopNavBar -->
+<nav class="bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container font-body-md text-body-md headlines:font-headline-lg text-headline-lg labels:font-label-md text-label-md fixed top-0 left-0 right-0 h-[64px] border-b border-outline-variant shadow-sm z-50">
+<div class="flex items-center justify-between px-margin-x w-full max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-6 h-full">
+<div class="font-headline-md text-headline-md font-bold text-on-primary dark:text-on-primary mr-4 tracking-tight">
+                    Lending Decision Intelligence
+                </div>
+<!-- Search (on_left logic) -->
+<div class="relative hidden md:flex items-center text-outline focus-within:text-on-primary transition-colors">
+<span class="material-symbols-outlined absolute left-3 pointer-events-none text-[20px]">search</span>
+<input class="bg-surface-tint/20 border-none rounded py-1.5 pl-10 pr-4 text-on-primary placeholder:text-outline-variant focus:ring-1 focus:ring-on-primary focus:bg-surface-tint/30 transition-all font-body-sm text-body-sm w-48" placeholder="Search..." type="text"/>
+</div>
+<div class="hidden md:flex items-center gap-8 h-full ml-4">
+<!-- Active Item -->
+<a class="h-full flex items-center text-on-primary border-b-[3px] border-secondary-container pb-0 font-bold hover:bg-on-primary-container/10 transition-all duration-200 active:scale-95" href="#">
+                        Portfolio Dashboard
+                    </a>
+<!-- Inactive Item -->
+<a class="h-full flex items-center text-on-primary-container hover:text-on-primary transition-colors hover:bg-on-primary-container/10 duration-200 active:scale-95" href="#">
+                        Applicant Lookup
+                    </a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="analytics" class="p-2 rounded-full hover:bg-on-primary-container/10 transition-all duration-200 text-on-primary-container hover:text-on-primary active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">analytics</span>
+</button>
+<button aria-label="settings" class="p-2 rounded-full hover:bg-on-primary-container/10 transition-all duration-200 text-on-primary-container hover:text-on-primary active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+</button>
+<button aria-label="notifications" class="p-2 rounded-full hover:bg-on-primary-container/10 transition-all duration-200 text-on-primary-container hover:text-on-primary active:scale-95 relative">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border border-primary-container"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-tint overflow-hidden border border-outline-variant ml-2 flex items-center justify-center text-on-primary font-bold text-xs uppercase cursor-pointer hover:ring-2 hover:ring-on-primary-container/30 transition-all">
+<!-- Fallback if img fails -->
+                    AP
+                </div>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-[88px] pb-12 px-margin-x max-w-container-max mx-auto">
+<!-- Page Header & Subtitle -->
+<header class="mb-stack-lg flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="font-display text-display text-on-surface mb-2">Portfolio Dashboard</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                    Cost-sensitive threshold simulation across 133,018 loan applications
+                </p>
+</div>
+<!-- Status Chips -->
+<div class="flex flex-wrap items-center gap-2">
+<div class="inline-flex items-center px-3 py-1 rounded bg-surface border border-outline-variant font-label-md text-label-md text-on-surface">
+<span class="text-outline mr-2">Threshold:</span> 44%
+                </div>
+<div class="inline-flex items-center px-3 py-1 rounded bg-secondary-fixed border border-secondary-fixed-dim font-label-md text-label-md text-on-secondary-fixed">
+<span class="text-secondary mr-2">Optimal:</span> 0.44
+                </div>
+<div class="inline-flex items-center px-3 py-1 rounded bg-surface border border-outline-variant font-label-md text-label-md text-on-surface-variant">
+                    XGBoost · 133k records
+                </div>
+</div>
+</header>
+<!-- Metric Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-stack-lg">
+<!-- Approvals -->
+<div class="bg-surface p-6 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.08)] border-l-4 border-l-[#10b981] flex flex-col justify-between h-full">
+<div class="font-label-md text-label-md text-outline uppercase tracking-wider mb-2">APPROVALS</div>
+<div class="font-headline-lg text-headline-lg text-on-surface mb-1">1,19,412</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">89.77% of 1,33,018</div>
+</div>
+<!-- Rejections -->
+<div class="bg-surface p-6 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.08)] border-l-4 border-l-[#f43f5e] flex flex-col justify-between h-full">
+<div class="font-label-md text-label-md text-outline uppercase tracking-wider mb-2">REJECTIONS</div>
+<div class="font-headline-lg text-headline-lg text-on-surface mb-1">13,606</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">10.23% of 1,33,018</div>
+</div>
+<!-- Net Portfolio Value -->
+<div class="bg-surface p-6 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.08)] border-l-4 border-l-[#2563eb] flex flex-col justify-between h-full">
+<div class="font-label-md text-label-md text-outline uppercase tracking-wider mb-2">NET PORTFOLIO VALUE</div>
+<div class="font-headline-lg text-headline-lg text-[#2563eb] font-bold mb-1">₹211.3M</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">expected revenue − expected losses</div>
+</div>
+<!-- Expected Defaults -->
+<div class="bg-surface p-6 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.08)] border-l-4 border-l-[#f59e0b] flex flex-col justify-between h-full">
+<div class="font-label-md text-label-md text-outline uppercase tracking-wider mb-2">EXPECTED DEFAULTS</div>
+<div class="font-headline-lg text-headline-lg text-on-surface mb-1">18,883</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">among approved applicants</div>
+</div>
+</div>
+<!-- Layout Grid for Slider & Charts -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-stack-lg">
+<!-- Left Col (Full width on md, 8 cols on lg) -->
+<div class="lg:col-span-12 flex flex-col gap-stack-lg">
+<!-- Threshold Slider Card -->
+<div class="bg-surface p-6 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.08)]">
+<div class="flex items-center justify-between mb-8">
+<div class="font-headline-md text-headline-md text-on-surface">Default Probability Threshold</div>
+<div class="bg-secondary-fixed text-on-secondary-fixed font-data-mono text-data-mono px-3 py-1 rounded font-bold">
+                            0.44
+                        </div>
+</div>
+<div class="relative pt-4 pb-2">
+<!-- Marker -->
+<div class="absolute left-[44%] -top-3 transform -translate-x-1/2 flex flex-col items-center">
+<span class="text-[#2563eb] text-[10px] font-bold mb-1">◆</span>
+<div class="h-6 w-px bg-outline-variant border-r border-dashed"></div>
+</div>
+<!-- Slider Input -->
+<input class="w-full h-2 rounded-full appearance-none bg-gradient-track slider-thumb focus:outline-none focus:ring-2 focus:ring-secondary-container/50" max="0.50" min="0.10" step="0.01" type="range" value="0.44"/>
+</div>
+<div class="flex justify-between mt-4 font-label-md text-label-md text-outline">
+<div>← Conservative (0.10)</div>
+<div>Permissive (0.50) →</div>
+</div>
+</div>
+<!-- Chart Row -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Chart A: Net Portfolio Value vs Threshold -->
+<div class="bg-surface p-6 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.08)] flex flex-col">
+<div class="font-headline-md text-headline-md text-on-surface mb-6">Net Portfolio Value vs Threshold</div>
+<!-- Mock Chart Area -->
+<div class="relative w-full h-64 border-b border-l border-outline-variant/30 flex-grow">
+<!-- Y-Axis Labels -->
+<div class="absolute left-0 bottom-0 top-0 w-12 flex flex-col justify-between text-right pr-2 py-2 font-data-mono text-[10px] text-outline">
+<span>250M</span>
+<span>200M</span>
+<span>150M</span>
+<span>100M</span>
+<span>50M</span>
+</div>
+<!-- X-Axis Labels -->
+<div class="absolute left-12 right-0 -bottom-6 flex justify-between font-data-mono text-[10px] text-outline px-2">
+<span>0.10</span>
+<span>0.20</span>
+<span>0.30</span>
+<span>0.40</span>
+<span>0.50</span>
+</div>
+<!-- Graph Content Canvas -->
+<div class="absolute left-12 right-0 top-0 bottom-0 overflow-hidden">
+<!-- Area Line SVG -->
+<svg class="absolute inset-0" height="100%" preserveaspectratio="none" viewbox="0 0 100 100" width="100%">
+<defs>
+<lineargradient id="blueGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#2563eb" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#2563eb" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Area Fill -->
+<polygon fill="url(#blueGradient)" points="0,90 20,70 40,30 60,15 80,10 100,5 100,100 0,100"></polygon>
+<!-- Line -->
+<polyline fill="none" points="0,90 20,70 40,30 60,15 80,10 100,5" stroke="#2563eb" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+</svg>
+<!-- Vertical Dashed Line for Optimal -->
+<div class="absolute left-[85%] top-0 bottom-0 w-px border-r-2 border-dashed border-[#f59e0b]">
+<div class="absolute -left-10 top-4 bg-surface border border-outline-variant px-2 py-1 rounded shadow-sm whitespace-nowrap">
+<span class="font-label-md text-label-md text-on-surface">Optimal ₹211.3M</span>
+</div>
+</div>
+</div>
+</div>
+<div class="h-6"></div> <!-- X-axis spacing -->
+</div>
+<!-- Chart B: Approval Rate & Revenue vs Threshold -->
+<div class="bg-surface p-6 rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.08)] flex flex-col">
+<div class="font-headline-md text-headline-md text-on-surface mb-6">Approval Rate &amp; Revenue vs Threshold</div>
+<!-- Mock Chart Area -->
+<div class="relative w-full h-64 border-b border-outline-variant/30 flex-grow">
+<!-- Graph Content Canvas -->
+<div class="absolute left-8 right-8 top-0 bottom-0 overflow-hidden border-l border-r border-outline-variant/30">
+<svg class="absolute inset-0" height="100%" preserveaspectratio="none" viewbox="0 0 100 100" width="100%">
+<!-- Emerald Line (Approval %) -->
+<polyline fill="none" points="0,95 20,80 40,50 60,20 80,10 100,5" stroke="#10b981" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+<!-- Blue Line (Revenue ₹M) -->
+<polyline fill="none" points="0,85 20,65 40,40 60,25 80,15 100,10" stroke="#2563eb" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+</svg>
+</div>
+<!-- Legend -->
+<div class="absolute -bottom-8 left-0 right-0 flex justify-center gap-6">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-[#10b981]"></div>
+<span class="font-label-md text-label-md text-outline">Approval %</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-[#2563eb]"></div>
+<span class="font-label-md text-label-md text-outline">Revenue ₹M</span>
+</div>
+</div>
+</div>
+<div class="h-8"></div> <!-- Legend spacing -->
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-low text-outline dark:text-outline font-body-sm text-body-sm w-full py-8 mt-auto border-t border-outline-variant">
+<div class="max-w-container-max mx-auto px-margin-x flex flex-col md:flex-row justify-between items-center">
+<div class="font-label-md text-label-md text-on-surface mb-4 md:mb-0">
+                © 2024 Lending Decision Intelligence. All rights reserved.
+            </div>
+<div class="flex items-center gap-6">
+<a class="text-outline hover:text-primary transition-colors" href="#">Compliance</a>
+<a class="text-outline hover:text-primary transition-colors" href="#">Risk Protocols</a>
+<a class="text-outline hover:text-primary transition-colors" href="#">Privacy Policy</a>
+</div>
+</div>
+</footer>
+</body></html>

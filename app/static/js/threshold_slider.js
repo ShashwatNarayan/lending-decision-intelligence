@@ -33,6 +33,14 @@
     if (topbar) topbar.textContent = Math.round(t * 100) + "%";
   }
 
+  // Visual only: paint the filled (blue) portion of the slider track.
+  function updateSliderFill(slider) {
+    const min = parseFloat(slider.min);
+    const max = parseFloat(slider.max);
+    const pct = ((parseFloat(slider.value) - min) / (max - min)) * 100;
+    slider.style.setProperty("--fill", pct + "%");
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     const slider = document.getElementById("threshold-slider");
     if (!slider) return;
@@ -42,12 +50,14 @@
     initPortfolioCharts(window.LDI_SERIES, window.LDI_OPTIMAL);
     slider.value = window.LDI_OPTIMAL;
     setThresholdLabels(window.LDI_OPTIMAL);
+    updateSliderFill(slider);
     highlightThreshold(window.LDI_OPTIMAL);
 
     // 2. On slide: fetch the evaluation at the new threshold and update.
     slider.addEventListener("input", function () {
       const t = parseFloat(slider.value);
       setThresholdLabels(t);
+      updateSliderFill(slider);
       highlightThreshold(t);
 
       fetch("/api/backtest/threshold/" + t.toFixed(2))

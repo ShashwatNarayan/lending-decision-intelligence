@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Applicant Lookup - Lending Decision Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#eae7e9",
+                        "outline": "#76777d",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#271901",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-tertiary-container": "#98805d",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e4e2e4",
+                        "on-secondary-container": "#fefcff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "primary-fixed": "#dae2fd",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#131b2e",
+                        "primary": "#000000",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1b1b1d",
+                        "inverse-primary": "#bec6e0",
+                        "outline-variant": "#c6c6cd",
+                        "on-surface-variant": "#45464d",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "background": "#fcf8fa",
+                        "inverse-on-surface": "#f3f0f2",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f6f3f5",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#dbe1ff",
+                        "surface-bright": "#fcf8fa",
+                        "tertiary": "#000000",
+                        "surface-dim": "#dcd9db",
+                        "secondary-container": "#316bf3",
+                        "inverse-surface": "#303032",
+                        "surface-container": "#f0edef",
+                        "tertiary-fixed": "#fcdeb5",
+                        "primary-container": "#131b2e",
+                        "surface": "#fcf8fa",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1b1b1d",
+                        "on-secondary-fixed": "#00174b",
+                        "surface-tint": "#565e74",
+                        "secondary": "#0051d5",
+                        "surface-variant": "#e4e2e4",
+                        "on-primary-container": "#7c839b",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-tertiary-fixed": "#271901"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "1.5rem",
+                        "container-max": "1440px",
+                        "gutter": "1rem",
+                        "stack-sm": "0.5rem",
+                        "stack-md": "1rem",
+                        "stack-xs": "0.25rem",
+                        "margin-x": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "data-mono": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #f1f5f9; } /* Utilizing the explicit color requested in Style Guidance for canvas */
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md text-on-surface">
+<!-- TopNavBar Component -->
+<header class="bg-primary-container dark:bg-primary-container border-b border-outline-variant shadow-sm fixed top-0 left-0 right-0 h-16 z-50">
+<div class="flex items-center justify-between px-margin-x w-full max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-8">
+<div class="font-headline-md text-headline-md font-bold text-on-primary dark:text-on-primary">
+                    Lending Decision Intelligence
+                </div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-on-primary-container hover:text-on-primary transition-colors font-body-md text-body-md hover:bg-on-primary-container/10 transition-all duration-200 px-2 py-1 rounded" href="#">Portfolio Dashboard</a>
+<a class="text-on-primary border-b-2 border-secondary-container pb-1 font-bold font-body-md text-body-md hover:bg-on-primary-container/10 transition-all duration-200 px-2 mt-1" href="#">Applicant Lookup</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-lowest/10 border border-outline-variant rounded-full text-on-primary text-body-sm font-body-sm focus:outline-none focus:border-secondary-container w-64 placeholder:text-outline-variant" placeholder="Search..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-primary-container hover:text-on-primary hover:bg-on-primary-container/10 transition-all duration-200 rounded-full active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined">analytics</span>
+</button>
+<button class="p-2 text-on-primary-container hover:text-on-primary hover:bg-on-primary-container/10 transition-all duration-200 rounded-full active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="p-2 text-on-primary-container hover:text-on-primary hover:bg-on-primary-container/10 transition-all duration-200 rounded-full active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-tint border border-outline-variant ml-2 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a financial credit analyst in a bright modern office setting, looking focused and competent. Soft natural lighting, corporate aesthetic, highly detailed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoiRCbvz5ROG85UJaDnC7YJWz2PlfqKWVWRjNwWFYbn4qkXDt5UsAMicoCVWrYJh8JJqi1adH7phIJPrV7S81xYpb5Yt_m0Ss6xJVH2ATKgcG4plWvgWKdjCXTcf7wNzdZKfcTJBukt9VB5_bZNlb7MftUiMRPez88YCTLjl5k-xsDOACGelR9EaWcK6IuasS09iOeBuEbcqre8PnnIXrsXoqj7vPA-IlQC9MBxpUp2B7nNMbadGEcgH0QY-0RZWo0JLMYyQx1W0lw"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-24 pb-12 px-margin-x w-full max-w-container-max mx-auto space-y-stack-lg">
+<!-- Page Header -->
+<div class="space-y-stack-xs">
+<h1 class="font-display text-display text-on-background">Applicant Lookup</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Individual borrower decision · SHAP explanation · Risk profile</p>
+</div>
+<!-- Search Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_1px_3px_0_rgba(15,23,42,0.08)] flex flex-col md:flex-row items-center justify-between gap-6 border border-outline-variant/30">
+<div class="flex items-center gap-3 w-full md:w-auto">
+<div class="relative flex-grow md:w-80">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface font-data-mono text-data-mono focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary" placeholder="Applicant ID" type="text" value="53765"/>
+</div>
+<button class="bg-secondary text-on-secondary px-6 py-2 rounded-lg font-label-md text-label-md hover:bg-secondary/90 transition-colors">
+                    Lookup
+                </button>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 border border-secondary text-secondary rounded-full font-label-md text-label-md flex items-center gap-1 hover:bg-secondary/10 transition-colors">
+                    Random APPROVE <span class="material-symbols-outlined text-[16px]">north_east</span>
+</button>
+<button class="px-4 py-2 border border-error text-error rounded-full font-label-md text-label-md flex items-center gap-1 hover:bg-error/10 transition-colors">
+                    Random REJECT <span class="material-symbols-outlined text-[16px]">north_east</span>
+</button>
+</div>
+</div>
+<!-- Decision Banner -->
+<div class="bg-error text-on-error p-6 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 border border-on-error-container/20">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-on-error/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">block</span>
+</div>
+<div>
+<h2 class="font-headline-lg text-headline-lg">Application Rejected</h2>
+<p class="font-body-md text-body-md text-on-error/90 mt-1">Applicant #53765 · P(default) = 0.28 · Threshold: 0.44</p>
+</div>
+</div>
+<div class="bg-on-error/10 px-4 py-2 rounded-lg border border-on-error/20">
+<span class="font-label-md text-label-md opacity-80 uppercase tracking-wider block text-right">Risk Grade</span>
+<span class="font-display text-display block">F3</span>
+</div>
+</div>
+<!-- Two Columns Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Applicant Profile -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-xl shadow-[0_1px_3px_0_rgba(15,23,42,0.08)] border border-outline-variant/30 flex flex-col">
+<div class="p-6 border-b border-outline-variant/50 flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">person</span>
+<h3 class="font-headline-md text-headline-md text-on-background">Applicant Profile</h3>
+</div>
+<div class="p-2 flex-grow">
+<table class="w-full text-left">
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="bg-surface-container-low/50">
+<td class="py-3 px-4 font-label-md text-label-md text-outline">Loan Amount</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-on-surface font-bold text-right">$45,000</td>
+</tr>
+<tr>
+<td class="py-3 px-4 font-label-md text-label-md text-outline">Annual Income</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-on-surface font-bold text-right">$62,500</td>
+</tr>
+<tr class="bg-surface-container-low/50">
+<td class="py-3 px-4 font-label-md text-label-md text-outline">DTI Ratio</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-on-surface font-bold text-right">41.2%</td>
+</tr>
+<tr>
+<td class="py-3 px-4 font-label-md text-label-md text-outline">FICO Score</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-error font-bold text-right">610</td>
+</tr>
+<tr class="bg-surface-container-low/50">
+<td class="py-3 px-4 font-label-md text-label-md text-outline">Employment</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-on-surface font-bold text-right">1.5 Yrs</td>
+</tr>
+<tr>
+<td class="py-3 px-4 font-label-md text-label-md text-outline">Revolving Util</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-on-surface font-bold text-right">88%</td>
+</tr>
+<tr class="bg-surface-container-low/50">
+<td class="py-3 px-4 font-label-md text-label-md text-outline">Loan-to-Income</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-error font-bold text-right">72%</td>
+</tr>
+<tr>
+<td class="py-3 px-4 font-label-md text-label-md text-outline">Credit History</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-on-surface font-bold text-right">4 Yrs</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right Column: Decision Explanation -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-xl shadow-[0_1px_3px_0_rgba(15,23,42,0.08)] border-l-4 border-l-error border-y border-r border-outline-variant/30 flex flex-col">
+<div class="p-6 border-b border-outline-variant/50 flex items-center gap-3">
+<span class="material-symbols-outlined text-error">balance</span>
+<h3 class="font-headline-md text-headline-md text-on-background">Why This Decision?</h3>
+</div>
+<div class="p-6 space-y-6">
+<!-- Key Drivers Bullets -->
+<ul class="space-y-3">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-error text-[20px] mt-0.5">warning</span>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">High Debt-to-Income Ratio</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Applicant's current obligations consume an unusually high percentage of stated income.</span>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-error text-[20px] mt-0.5">warning</span>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Recent Credit Utilization</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Revolving credit utilization is near maximum limits (88%), indicating potential cash flow distress.</span>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-error text-[20px] mt-0.5">warning</span>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Short Employment Tenure</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Current employment duration of 1.5 years adds volatility to future income stability projections.</span>
+</div>
+</li>
+</ul>
+<hr class="border-outline-variant/30"/>
+<!-- SHAP Chart -->
+<div>
+<h4 class="font-label-md text-label-md text-outline uppercase tracking-wide mb-4">Top SHAP Risk Factors</h4>
+<div class="h-[280px] w-full relative flex flex-col justify-between py-2 overflow-hidden text-data-mono font-data-mono">
+<!-- Center Zero Line -->
+<div class="absolute left-1/2 top-0 bottom-0 w-px bg-outline-variant z-0"></div>
+<!-- Rows -->
+<div class="relative z-10 flex items-center h-5 w-full">
+<div class="w-1/2 pr-4 text-right text-xs text-on-surface-variant truncate">FICO Score</div>
+<div class="w-1/2 pl-4 flex items-center"><div class="h-3 bg-error rounded-sm w-[80%]"></div></div>
+</div>
+<div class="relative z-10 flex items-center h-5 w-full">
+<div class="w-1/2 pr-4 text-right text-xs text-on-surface-variant truncate">DTI Ratio</div>
+<div class="w-1/2 pl-4 flex items-center"><div class="h-3 bg-error rounded-sm w-[65%]"></div></div>
+</div>
+<div class="relative z-10 flex items-center h-5 w-full">
+<div class="w-1/2 pr-4 text-right text-xs text-on-surface-variant truncate">Revolving Util</div>
+<div class="w-1/2 pl-4 flex items-center"><div class="h-3 bg-error rounded-sm w-[55%]"></div></div>
+</div>
+<div class="relative z-10 flex items-center h-5 w-full">
+<div class="w-1/2 pr-4 text-right text-xs text-on-surface-variant truncate">Loan-to-Income</div>
+<div class="w-1/2 pl-4 flex items-center"><div class="h-3 bg-error rounded-sm w-[45%]"></div></div>
+</div>
+<div class="relative z-10 flex items-center h-5 w-full">
+<div class="w-1/2 pr-4 text-right text-xs text-on-surface-variant truncate">Inquiries (6m)</div>
+<div class="w-1/2 pl-4 flex items-center"><div class="h-3 bg-error rounded-sm w-[30%]"></div></div>
+</div>
+<div class="relative z-10 flex items-center h-5 w-full">
+<div class="w-1/2 pr-4 flex items-center justify-end"><div class="h-3 bg-secondary rounded-sm w-[15%]"></div></div>
+<div class="w-1/2 pl-4 text-left text-xs text-on-surface-variant truncate">State Res</div>
+</div>
+<div class="relative z-10 flex items-center h-5 w-full">
+<div class="w-1/2 pr-4 flex items-center justify-end"><div class="h-3 bg-secondary rounded-sm w-[20%]"></div></div>
+<div class="w-1/2 pl-4 text-left text-xs text-on-surface-variant truncate">Credit Hist Yrs</div>
+</div>
+<div class="relative z-10 flex items-center h-5 w-full">
+<div class="w-1/2 pr-4 flex items-center justify-end"><div class="h-3 bg-secondary rounded-sm w-[25%]"></div></div>
+<div class="w-1/2 pl-4 text-left text-xs text-on-surface-variant truncate">Annual Income</div>
+</div>
+<div class="relative z-10 flex items-center h-5 w-full">
+<div class="w-1/2 pr-4 flex items-center justify-end"><div class="h-3 bg-secondary rounded-sm w-[35%]"></div></div>
+<div class="w-1/2 pl-4 text-left text-xs text-on-surface-variant truncate">Home Ownership</div>
+</div>
+<div class="relative z-10 flex items-center h-5 w-full">
+<div class="w-1/2 pr-4 flex items-center justify-end"><div class="h-3 bg-secondary rounded-sm w-[40%]"></div></div>
+<div class="w-1/2 pl-4 text-left text-xs text-on-surface-variant truncate">Prior Loans</div>
+</div>
+<!-- Axis Labels -->
+<div class="absolute bottom-0 left-0 w-full flex justify-between text-[10px] text-outline mt-2 pt-1 border-t border-outline-variant/30 z-10">
+<span>Risk Decrease</span>
+<span>Neutral</span>
+<span>Risk Increase</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Component -->
+<footer class="bg-surface-container-low dark:bg-surface-container-low border-t border-outline-variant w-full py-8 mt-auto">
+<div class="max-w-container-max mx-auto px-margin-x flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="font-label-md text-label-md text-on-surface">
+                © 2024 Lending Decision Intelligence. All rights reserved.
+            </div>
+<div class="flex flex-wrap items-center gap-6">
+<a class="font-body-sm text-body-sm text-outline hover:text-primary transition-colors" href="#">Compliance</a>
+<a class="font-body-sm text-body-sm text-outline hover:text-primary transition-colors" href="#">Risk Protocols</a>
+<a class="font-body-sm text-body-sm text-outline hover:text-primary transition-colors" href="#">Privacy Policy</a>
+</div>
+</div>
+</footer>
+</body></html>

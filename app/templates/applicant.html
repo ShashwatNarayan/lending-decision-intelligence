@@ -5,76 +5,106 @@
 {% block content %}
 {% set is_approve = applicant.decision == 'APPROVE' %}
 
+<div class="page-head">
+  <h1 class="page-title">Applicant Lookup</h1>
+  <p class="page-sub">Individual borrower decision · SHAP explanation · risk profile</p>
+</div>
+
+<!-- Search / lookup bar -->
+<section class="surface">
+  <div class="lookup-bar">
+    <div class="lookup-left">
+      <input class="lookup-input" type="text" id="lookup-id"
+             value="{{ applicant.id }}" placeholder="Applicant ID">
+      <button class="btn primary" id="lookup-btn">Lookup</button>
+    </div>
+    <div class="lookup-right">
+      <button class="btn pill approve" id="random-approve">Random APPROVE ↗</button>
+      <button class="btn pill reject" id="random-reject">Random REJECT ↗</button>
+    </div>
+  </div>
+</section>
+
 <!-- Decision banner -->
 <div class="decision-banner {{ 'approve' if is_approve else 'reject' }}">
   <div>
-    <div class="headline">{{ 'APPROVED' if is_approve else 'Application Rejected' }}</div>
+    <div class="headline">{{ 'Application Approved' if is_approve else 'Application Rejected' }}</div>
     <div class="meta">
       Applicant #{{ applicant.id }} &nbsp;·&nbsp;
       P(default) = {{ '%.2f' % applicant.default_probability }}
+      {% if is_approve %} &nbsp;·&nbsp; Assigned Rate: {{ '%.2f' % applicant.assigned_rate }}%{% endif %}
+      &nbsp;·&nbsp; Threshold: 0.44
     </div>
   </div>
-  {% if is_approve %}
-  <div class="rate">Assigned rate: {{ '%.2f' % applicant.assigned_rate }}%</div>
-  {% endif %}
+  <span class="tag">Automated Decision</span>
 </div>
 
 <!-- Two columns -->
 <div class="two-col">
   <!-- Left — applicant profile -->
   <div class="panel">
-    <h2>Applicant Profile</h2>
-    <table class="profile">
-      <tr><td class="k">Loan amount</td>
-          <td class="v">&#8377;{{ '{:,.0f}'.format(applicant.loan_amnt) }}</td></tr>
-      <tr><td class="k">Annual income</td>
-          <td class="v">&#8377;{{ '{:,.0f}'.format(applicant.annual_inc) }}</td></tr>
-      <tr><td class="k">Debt-to-income (DTI)</td>
-          <td class="v">{{ '%.1f' % applicant.dti }}%</td></tr>
-      <tr><td class="k">FICO score</td>
-          <td class="v">{{ '%.0f' % applicant.fico_score }}</td></tr>
-      <tr><td class="k">Employment length</td>
-          <td class="v">{{ '%.0f' % applicant.emp_length }} yrs</td></tr>
-      <tr><td class="k">Revolving utilization</td>
-          <td class="v">{{ '%.1f' % applicant.revol_util }}%</td></tr>
-      <tr><td class="k">Loan-to-income</td>
-          <td class="v">{{ '%.2f' % applicant.loan_to_income }}</td></tr>
-      <tr><td class="k">Credit history</td>
-          <td class="v">{{ '%.1f' % applicant.credit_history_years }} yrs</td></tr>
-    </table>
+    <div class="panel-head">Applicant Profile</div>
+    <div class="panel-body">
+      <table class="profile">
+        <tr><td class="k">Loan amount</td>
+            <td class="v">&#8377;{{ '{:,.0f}'.format(applicant.loan_amnt) }}</td></tr>
+        <tr><td class="k">Annual income</td>
+            <td class="v">&#8377;{{ '{:,.0f}'.format(applicant.annual_inc) }}</td></tr>
+        <tr><td class="k">Debt-to-income (DTI)</td>
+            <td class="v">{{ '%.1f' % applicant.dti }}%</td></tr>
+        <tr><td class="k">FICO score</td>
+            <td class="v">{{ '%.0f' % applicant.fico_score }}</td></tr>
+        <tr><td class="k">Employment length</td>
+            <td class="v">{{ '%.0f' % applicant.emp_length }} yrs</td></tr>
+        <tr><td class="k">Revolving utilization</td>
+            <td class="v">{{ '%.1f' % applicant.revol_util }}%</td></tr>
+        <tr><td class="k">Loan-to-income</td>
+            <td class="v">{{ '%.2f' % applicant.loan_to_income }}</td></tr>
+        <tr><td class="k">Credit history</td>
+            <td class="v">{{ '%.1f' % applicant.credit_history_years }} yrs</td></tr>
+      </table>
+    </div>
   </div>
 
   <!-- Right — decision explanation -->
-  <div class="panel">
-    <h2>Decision Explanation</h2>
-    {% if applicant.decision_reasons %}
-      <h3 style="font-size:14px;margin:0 0 10px;">Why this decision?</h3>
-      <ul class="reasons">
-        {% for reason in applicant.decision_reasons %}
-          <li>{{ reason }}</li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="reasons-fallback">Detailed reasons computed on request.</p>
-    {% endif %}
+  <div class="panel {{ 'accent-approve' if is_approve else 'accent-reject' }}">
+    <div class="panel-head">Why This Decision?</div>
+    <div class="panel-body padded">
+      {% if applicant.decision_reasons %}
+        <ul class="reasons">
+          {% for reason in applicant.decision_reasons %}
+            <li><span class="warn">⚠</span><span>{{ reason }}</span></li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="reasons-fallback">Detailed reasons computed on request.</p>
+      {% endif %}
 
-    <h3 style="font-size:14px;margin:0 0 10px;">Top SHAP factors</h3>
-    <canvas id="chart-shap" height="240"></canvas>
+      <h4 class="reasons-title">Top SHAP Risk Factors</h4>
+      <div class="shap-wrap"><canvas id="chart-shap"></canvas></div>
+    </div>
   </div>
-</div>
-
-<!-- Navigation -->
-<div class="nav-row">
-  <a class="btn primary" href="{{ url_for('portfolio.dashboard') }}">← Portfolio Dashboard</a>
-  <span class="spacer"></span>
-  <a class="btn approve" href="{{ url_for('applicant.random_applicant', decision='APPROVE') }}">Load Random APPROVE</a>
-  <a class="btn reject" href="{{ url_for('applicant.random_applicant', decision='REJECT') }}">Load Random REJECT</a>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
   window.LDI_APPLICANT_ID = {{ applicant.id | tojson }};
+
+  // Lookup-bar navigation (plain window.location, no fetch).
+  document.getElementById("lookup-btn").addEventListener("click", function () {
+    var id = document.getElementById("lookup-id").value.trim();
+    if (id) window.location = "/applicant/" + encodeURIComponent(id);
+  });
+  document.getElementById("lookup-id").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") document.getElementById("lookup-btn").click();
+  });
+  document.getElementById("random-approve").addEventListener("click", function () {
+    window.location = "/applicant/random?decision=APPROVE";
+  });
+  document.getElementById("random-reject").addEventListener("click", function () {
+    window.location = "/applicant/random?decision=REJECT";
+  });
 </script>
 <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 <script>

@@ -4,16 +4,19 @@
 {% block topbar_threshold %}{{ (optimal * 100) | round(0, 'floor') | int }}%{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Portfolio Dashboard</h1>
+<div class="page-head">
+  <h1 class="page-title">Portfolio Dashboard</h1>
+  <p class="page-sub">Cost-sensitive threshold simulation across 133,018 loan applications</p>
+</div>
 
 <!-- Section 1 — metric cards -->
 <section class="cards">
-  <div class="card">
+  <div class="card accent-approvals">
     <div class="label">Approvals</div>
     <div class="value" id="card-approvals">{{ '{:,}'.format(initial.approvals) }}</div>
     <div class="sub" id="card-approvals-sub">{{ '%.2f' % initial.approval_rate }}% of 133,018</div>
   </div>
-  <div class="card">
+  <div class="card accent-rejections">
     <div class="label">Rejections</div>
     <div class="value" id="card-rejections">{{ '{:,}'.format(initial.rejections) }}</div>
     <div class="sub" id="card-rejections-sub">{{ '%.2f' % (initial.rejections / 133018 * 100) }}% of 133,018</div>
@@ -23,7 +26,7 @@
     <div class="value" id="card-net">&#8377;{{ '%.1f' % (initial.net_portfolio_value / 1000000) }}M</div>
     <div class="sub">expected revenue − expected losses</div>
   </div>
-  <div class="card">
+  <div class="card accent-defaults">
     <div class="label">Expected Defaults</div>
     <div class="value" id="card-defaults">{{ '{:,}'.format(initial.false_positives) }}</div>
     <div class="sub">among approved</div>
@@ -31,14 +34,15 @@
 </section>
 
 <!-- Section 2 — threshold slider -->
-<section class="slider-section">
-  <div class="slider-label">
-    Default Probability Threshold: <span id="slider-value">0.44</span>
+<section class="surface">
+  <div class="slider-head">
+    <div class="title">Default Probability Threshold</div>
+    <div class="slider-value-badge" id="slider-value">0.44</div>
   </div>
-  <input type="range" id="threshold-slider" min="0.10" max="0.50" step="0.01" value="0.44">
+  <input class="slider" type="range" id="threshold-slider" min="0.10" max="0.50" step="0.01" value="0.44">
   <div class="slider-anchors">
-    <span>Conservative (0.10)</span>
-    <span>Permissive (0.50)</span>
+    <span>← Conservative (0.10)</span>
+    <span>Permissive (0.50) →</span>
   </div>
 </section>
 
@@ -46,11 +50,11 @@
 <section class="charts">
   <div class="chart-box">
     <h3>Net Portfolio Value vs Threshold</h3>
-    <canvas id="chart-net"></canvas>
+    <div class="chart-frame"><canvas id="chart-net"></canvas></div>
   </div>
   <div class="chart-box">
     <h3>Approval Rate &amp; Revenue vs Threshold</h3>
-    <canvas id="chart-rate-rev"></canvas>
+    <div class="chart-frame"><canvas id="chart-rate-rev"></canvas></div>
   </div>
 </section>
 {% endblock %}
