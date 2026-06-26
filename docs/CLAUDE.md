@@ -254,7 +254,7 @@ GEMINI_API_KEY=     # Gemini API (Phase 5)
 
 ## Current build phase
 
-**Phase 4 — NL Query Layer (Days 15–17)**
+**Phase 5 — Deployment and Polish (Days 18–20)**
 
 ### Phase 0 — Setup and foundation (Days 1–2) — DONE
 
@@ -353,6 +353,27 @@ vanilla JS + Chart.js (CDN). No React, no build step, no new backend logic.
 > `main.index` placeholder moved to `/health`). The scaler is still **not**
 > applied anywhere in the inference path (Phase 1 finding preserved).
 
+### Phase 4 — NL Query Layer (Days 15–17) — DONE
+
+- [x] app/nl_query/__init__.py
+- [x] app/nl_query/semantic_layer.py — SCHEMA_DESCRIPTION, ALLOWED_TABLES, MAX_RESULT_ROWS=500
+- [x] app/nl_query/security.py — 4 guards (validate_sql, is_prompt_injection, sanitize_question, check_question_length)
+- [x] app/nl_query/sql_generator.py — generate_sql() via Gemini 2.5 Flash, lazy import, fail-fast on missing key
+- [x] app/nl_query/router.py — full pipeline, read-only AI_DB_URL, query_log audit via DATABASE_URL
+- [x] app/routes/query.py — GET /query + POST /api/query (single bp, no shared prefix — documented)
+- [x] query_bp registered in app/__init__.py
+- [x] 'Ask the Loan Book' nav link added to base.html
+- [x] app/templates/query.html — textarea, spinner, answer/SQL toggle, results table, BLOCKED badge, 8 example pills
+- [x] app/static/js/nl_query.js — vanilla JS, Ctrl+Enter, HTML-escaped table builder, pills without auto-submit
+- [x] tests/test_nl_queries.py — 14 cases, no live API/DB calls
+- [x] tests/adversarial_queries.md — 10 inputs mapped to defense layer
+- [x] requirements.txt — google-generativeai==0.8.5 added
+- [x] All 14 tests pass; smoke check confirmed LIMIT 500 appended
+
+> NOTE — blueprint prefix deviation: query_bp uses no shared prefix;
+> /query and /api/query declared as explicit paths to keep the API
+> sibling to existing /api/* routes. Matches the Phase 3 pattern.
+
 ---
 
 ## How to run locally
@@ -387,4 +408,4 @@ python flask_app.py
 
 ---
 
-*Last updated: Phase 3 complete*
+*Last updated: Phase 4 complete*

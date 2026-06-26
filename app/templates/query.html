@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Ask the Loan Book — Lending Decision Intelligence{% endblock %}
+{% block nav_query %}active{% endblock %}
+
+{% block content %}
+<style>
+  /* Scoped styles for the NL query page (keeps main.css untouched). */
+  .nlq-input {
+    width: 100%; box-sizing: border-box; resize: vertical;
+    font-family: inherit; font-size: 15px; padding: 12px 14px;
+    border: 1px solid #d7dce5; border-radius: 8px; line-height: 1.5;
+  }
+  .nlq-actions { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+  .nlq-hint { color: var(--muted); font-size: 13px; }
+  .nlq-spinner {
+    display: inline-block; width: 18px; height: 18px;
+    border: 3px solid #d7dce5; border-top-color: #2563eb; border-radius: 50%;
+    animation: nlq-spin 0.8s linear infinite;
+  }
+  @keyframes nlq-spin { to { transform: rotate(360deg); } }
+  .nlq-response { margin-top: 22px; }
+  #answer-box { font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
+  .nlq-badge {
+    display: inline-block; background: #dc2626; color: #fff; font-size: 12px;
+    font-weight: 700; letter-spacing: 0.04em; padding: 3px 10px;
+    border-radius: 999px; margin-bottom: 10px;
+  }
+  #sql-box {
+    background: #0f172a; color: #e2e8f0; padding: 14px 16px; border-radius: 8px;
+    overflow-x: auto; font-size: 13px; margin-top: 10px;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  }
+  .nlq-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
+  .nlq-table th, .nlq-table td {
+    border: 1px solid #e5e7eb; padding: 8px 10px; text-align: left;
+  }
+  .nlq-table th { background: #f1f5f9; font-weight: 600; }
+  .nlq-examples { margin-top: 28px; }
+  .nlq-examples h3 { font-size: 14px; margin: 0 0 12px; color: var(--muted); }
+  .nlq-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .nlq-pill {
+    background: #eef2ff; color: #3730a3; border: 1px solid #c7d2fe;
+    border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer;
+  }
+  .nlq-pill:hover { background: #e0e7ff; }
+  .hidden { display: none !important; }
+</style>
+
+<div class="page-head">
+  <h1 class="page-title">Ask the Loan Book</h1>
+  <p class="page-sub">
+    Ask any question about the loan portfolio in plain English. The system
+    generates SQL, runs it on a read-only connection, and returns a
+    plain-English answer.
+  </p>
+</div>
+
+<section class="surface">
+  <textarea id="question-input" class="nlq-input" rows="4"
+            placeholder="e.g. How many applicants were rejected with a FICO score above 700?"></textarea>
+  <div class="nlq-actions">
+    <button class="btn primary" id="submit-btn">Ask</button>
+    <span class="nlq-hint">Ctrl + Enter to submit</span>
+    <span class="nlq-spinner hidden" id="spinner"></span>
+  </div>
+
+  <div class="nlq-response hidden" id="response-section">
+    <span class="nlq-badge hidden" id="blocked-badge">BLOCKED</span>
+    <div id="answer-box"></div>
+    <button class="btn" id="show-sql-btn" style="margin-top:14px; display:none;">Show SQL</button>
+    <pre id="sql-box" class="hidden"></pre>
+    <div id="results-table"></div>
+  </div>
+</section>
+
+<div class="surface nlq-examples">
+  <h3>Example questions</h3>
+  <div class="nlq-pills" id="example-pills">
+    <button class="nlq-pill">How many applicants were approved?</button>
+    <button class="nlq-pill">What is the average FICO score of rejected applicants?</button>
+    <button class="nlq-pill">What is the average loan amount by risk grade?</button>
+    <button class="nlq-pill">How many applicants with DTI above 30 were approved?</button>
+    <button class="nlq-pill">What is the default rate among approved applicants?</button>
+    <button class="nlq-pill">Which loan purpose has the highest approval rate?</button>
+    <button class="nlq-pill">What is the average assigned interest rate by decision?</button>
+    <button class="nlq-pill">How many applicants have a loan-to-income ratio above 0.5?</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/nl_query.js') }}"></script>
+{% endblock %}

@@ -28,6 +28,7 @@ def create_app():
     from .routes.main import main_bp
     from .routes.portfolio import portfolio_bp
     from .routes.applicant import applicant_bp, applicant_api_bp
+    from .routes.query import query_bp
 
     app.register_blueprint(main_bp)
     # portfolio owns "/" (dashboard) and the /api/backtest/* JSON routes.
@@ -36,6 +37,8 @@ def create_app():
     # /api/score and /api/applicant/* are unchanged.
     app.register_blueprint(applicant_bp, url_prefix="/applicant")
     app.register_blueprint(applicant_api_bp)
+    # NL query layer: GET /query (page) + POST /api/query (Phase 4).
+    app.register_blueprint(query_bp)
 
     # JSON error handlers
     @app.errorhandler(404)
