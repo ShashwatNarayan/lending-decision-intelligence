@@ -3,9 +3,6 @@ venv/
 .env
 __pycache__/
 *.pyc
-*.pkl
-model/artifacts/*.pkl
-model/artifacts/*.json
 data/stage2_features.csv
 instance/
 .DS_Store
