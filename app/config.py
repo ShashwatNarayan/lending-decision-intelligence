@@ -17,6 +17,11 @@ class Config:
         print("FATAL: SECRET_KEY environment variable is not set.", file=sys.stderr)
         sys.exit(1)
 
+    # Production guards: debug off unless explicitly in development, and never
+    # leak tracebacks to the client.
+    DEBUG = os.environ.get("FLASK_ENV") == "development"
+    PROPAGATE_EXCEPTIONS = False
+
     SQLALCHEMY_DATABASE_URI = _normalize_db_url(os.environ.get("DATABASE_URL"))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {

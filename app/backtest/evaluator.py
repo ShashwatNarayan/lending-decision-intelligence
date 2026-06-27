@@ -132,7 +132,6 @@ class PortfolioEvaluator:
         while t <= stop + 1e-9:
             th = round(t, 2)
             results.append(self.evaluate_at_threshold(th))
-            print(f"Evaluated threshold {th:.2f}...")
             t += step
         results.sort(key=lambda r: r["threshold"])
         return results

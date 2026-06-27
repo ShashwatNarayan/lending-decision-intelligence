@@ -24,7 +24,6 @@ class ScoringModel:
         self.scaler = self._load("scaler")
         self.feature_columns = self._load("feature_columns")  # list of 30
         self.threshold = self._load("optimal_threshold")  # 0.2282...
-        print(f"ScoringModel loaded. Threshold: {self.threshold:.4f}")
 
     @staticmethod
     def _load(name):
